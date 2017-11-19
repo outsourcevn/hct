@@ -1,0 +1,67 @@
+﻿@using PagedList.Mvc;
+@using PagedList;
+@using HocCatToc.Models;
+@{
+    ViewBag.Title = "Danh sách video";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<h2>@ViewBag.Title</h2>
+<button type="button" class="btn btn-primary" onclick="openVideo(0);">Thêm Mới</button><br /><br />
+<div class="panel-heading">
+    <div class="form-inline">
+        <div class="form-group">
+            <input type="text" id="keyword" class="form-control" placeholder="Nhập từ khóa" value="@ViewBag.k" style="width:360px;" />
+            <button onclick="searchVideo();" class="btn-default btn-info">Tìm Kiếm</button>
+        </div>
+    </div>
+</div>
+<table class="table marginBottom0">
+    <tr><th>Tên video</th><th>Link</th><th>Ảnh</th><th>Ngày Đăng</th></tr>
+    @foreach (var item in (PagedList<video>)ViewBag.OnePage)
+    {
+
+        <tr>
+            <td>
+                @item.name
+                @*@if (item.is_admin != null)
+                    {
+                        <span style="color:red;"><b>@item.name</b></span>
+                    }
+                    else
+                    {
+                        @item.name
+                    }*@
+            </td>
+            <td>@item.link</td>
+            <td>@item.img</td>
+            <td>@item.date</td>
+            <td><a href="#" onclick="openVideo(@item.id,'@item.name','@item.link','@item.img','@item.date')">Sửa</a></td>
+            <td><a href="#" onclick="confirmDelVideo(@item.id,'@item.name');">Xóa</a></td>          
+        </tr>
+    }
+</table>
+@Html.PagedListPager((IPagedList)ViewBag.OnePage, page => Url.Action("YouTube", new { page }))
+
+<div id="VideoDialog" style="display:none;" class="col-sm-4 dDialog">
+    <div class="dTitle">Thêm/Sửa</div>
+    <div class="dDialogContent">
+        <input type="hidden" id="cp_ID" />
+        <p>Tên</p>
+        <input id="cp_name" type="text" class="form-control" placeholder="tên">
+        <p>Link</p>
+        <input id="cp_link" type="text" class="form-control" placeholder="Nhập link">
+        <p>Ảnh</p>
+        <input id="cp_img" type="text" class="form-control" placeholder="Nhập ảnh">
+        <p>Ngày đăng</p>
+        <input id="cp_date" type="password" class="form-control" placeholder="Ngày đăng">
+        <div class="divBtn">
+            <button type="button" class="btn btn-primary" onclick="saveVideo()">Đồng Ý</button>
+            <button type="button" class="btn btn-primary" onclick="closeDDialog('#VideoDialog')">Hủy</button>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var url_addUpdateVideo = '@Url.Action("addUpdateVideo", "Admin")', url_deleteCustomer = '@Url.Action("deleteVideo", "Admin")';
+</script>
+<script type="text/javascript" src="~/Scripts/Video.js"></script>
