@@ -155,6 +155,101 @@ namespace HocCatToc.Controllers
                 return Api("error", field, "Cập nhật lỗi sql: " + ex.ToString());
             }
         }
+        //Hàm này login bằng số phone và mật khẩu, gửi kèm key bảo mật
+        //Trả về là user_id của user này nếu đăng nhập thành công, nếu không báo sai pass và mật khẩu kèm theo user_id là rỗng
+        [HttpPost]
+        public string login(string phone, string pass, double? key)
+        {
+            Dictionary<string, string> field = new Dictionary<string, string>();
+            try
+            {
+                MD5 md5Hash = MD5.Create();
+                string hash = Config.GetMd5Hash(md5Hash, pass);
+                if (db.customers.Any(o => o.phone == phone && o.pass == hash))
+                {
+                    string user_id = db.customers.Where(o => o.phone == phone && o.pass == hash).FirstOrDefault().id.ToString();
+                    field.Add("user_id", user_id);
+                    return Api("success", field, "Đăng nhập thành công!");
+                }
+                else
+                {
+                    field.Add("user_id", "");
+                    return Api("failed", field, "Đăng nhập không thành công, sai số điện thoại hoặc mật khẩu!");
+                }
+            }
+            catch (Exception ex)
+            {
+                field.Add("user_id", "");
+                return Api("error", field, "Lỗi sql: " + ex.ToString());
+            }
+        }
+        //Hàm này trả về danh sách các voucher sắp xếp giảm dần theo id, mới nhất lên đầu
+        //Là những video mà user có id là user_id được phép học, kèm code đi cùng
+        //Giải thích các trường
+        //id là id của video
+        //create_date là ngày tạo
+        //des là mô tả
+        //image là ảnh
+        //link là đường link đầy đủ
+        //name là tên video
+        //code là mã mà user phải nhập khi click vào để học, lần nào cũng phải nhập vì có thể thỉnh thoảng đổi code để bảo mật
+        public string getListVideo(long user_id, string keyword)
+        {
+            Dictionary<string, string> field = new Dictionary<string, string>();
+            try
+            {
+                if (keyword == null) keyword = "";
+                DateTime dtn = DateTime.Now;
+                //var p = (from q in db.videos where q.name.Contains(keyword) select q).OrderBy(o => o.id).ToList();
+                var p = (from q in db.customers
+                         where q.id==user_id
+                         join q2 in db.customer_code on q.id equals q2.customer_id 
+                         join q3 in db.videos on q2.video_id equals q3.id
+                         select new
+                         {
+                             id=q3.id,
+                             create_date = q3.create_date,
+                             des=q3.des,
+                             image=q3.img,
+                             link=q3.link,
+                             name=q3.name,
+                             code=q2.code
+                         }).Where(o=>o.name.Contains(keyword)).OrderByDescending(o => o.id).ToList();
+                field.Add("list", JsonConvert.SerializeObject(p));
+                return ApiArray("success", field, "Danh sách các video");
+            }
+            catch (Exception ex)
+            {
+                field.Add("list", "[]");
+                return Api("error", field, "Lỗi sql: " + ex.ToString());
+            }
+        }
+        //Kiểm tra video_id này của khách hàng có id là user_id có mã code là code có hợp lệ không
+        //Trả về trường true=1 nếu hợp lệ, true=0 nếu không hợp lệ, rỗng nếu api có lỗi
+        public string isTrueCode(int video_id,int code,long user_id)
+        {
+            Dictionary<string, string> field = new Dictionary<string, string>();
+            try
+            {
+
+                if (db.customer_code.Any(o => o.video_id == video_id && o.code == code && o.customer_id == user_id))
+                {
+                    
+                    field.Add("true", "1");
+                    return Api("success", field, "Mã code này đúng là của khách hàng này học video này!");
+                }
+                else
+                {
+                    field.Add("true", "0");
+                    return Api("failed", field, "Mã code này không thuộc về khách hàng này học video này! Xin bạn hỏi quản trị website");
+                }
+            }
+            catch (Exception ex)
+            {
+                field.Add("true", "");
+                return Api("error", field, "Lỗi sql: " + ex.ToString());
+            }
+        }
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";

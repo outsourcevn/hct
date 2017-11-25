@@ -8,6 +8,7 @@
         <EntityTypeShape EntityType="hoccattocModel.customer_code" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="hoccattocModel.video" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="hoccattocModel.customer" Width="1.5" PointX="0.75" PointY="3.75" />
+        <EntityTypeShape EntityType="hoccattocModel.cat" Width="1.5" PointX="3.375" PointY="5.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

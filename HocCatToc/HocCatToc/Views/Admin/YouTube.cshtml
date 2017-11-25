@@ -6,7 +6,7 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 <h2>@ViewBag.Title</h2>
-<button type="button" class="btn btn-primary" onclick="openVideo(0);">Thêm Mới</button><br /><br />
+<button type="button" class="btn btn-primary" onclick="getLink();">Lấy Danh Sách Mới</button><br /><br />
 <div class="panel-heading">
     <div class="form-inline">
         <div class="form-group">
@@ -33,9 +33,9 @@
                     }*@
             </td>
             <td>@item.link</td>
-            <td>@item.img</td>
+            <td><img src="@item.img"> /></td>
             <td>@item.date</td>
-            <td><a href="#" onclick="openVideo(@item.id,'@item.name','@item.link','@item.img','@item.date')">Sửa</a></td>
+            @*<td><a href="#" onclick="openVideo(@item.id,'@item.name','@item.link','@item.img','@item.date','@item.des')">Sửa</a></td>*@
             <td><a href="#" onclick="confirmDelVideo(@item.id,'@item.name');">Xóa</a></td>          
         </tr>
     }
@@ -46,14 +46,19 @@
     <div class="dTitle">Thêm/Sửa</div>
     <div class="dDialogContent">
         <input type="hidden" id="cp_ID" />
-        <p>Tên</p>
-        <input id="cp_name" type="text" class="form-control" placeholder="tên">
         <p>Link</p>
-        <input id="cp_link" type="text" class="form-control" placeholder="Nhập link">
+        <input id="cp_link" type="text" class="form-control" placeholder="Nhập link" onblur="getLink(event);">
+        <p>Tên</p>
+        <input id="cp_name" type="text" class="form-control" placeholder="Tên">       
         <p>Ảnh</p>
         <input id="cp_img" type="text" class="form-control" placeholder="Nhập ảnh">
+        <p>Mô tả</p>
+        <input id="cp_des" type="text" class="form-control" placeholder="Nhập mô tả">
         <p>Ngày đăng</p>
         <input id="cp_date" type="password" class="form-control" placeholder="Ngày đăng">
+        @*<p>Nhập tên danh mục</p>
+        <input type="hidden" name="cat_video_id" value="0" id="cat_video_id" />
+        <input type="text" placeholder="Nhập danh mục mới hoặc chọn danh mục trong danh sách" id="cat_video" class="form-control" name="cat_video" onkeyup="getdanhmuc();" autocomplete="off" />*@
         <div class="divBtn">
             <button type="button" class="btn btn-primary" onclick="saveVideo()">Đồng Ý</button>
             <button type="button" class="btn btn-primary" onclick="closeDDialog('#VideoDialog')">Hủy</button>
@@ -65,3 +70,53 @@
     var url_addUpdateVideo = '@Url.Action("addUpdateVideo", "Admin")', url_deleteCustomer = '@Url.Action("deleteVideo", "Admin")';
 </script>
 <script type="text/javascript" src="~/Scripts/Video.js"></script>
+<script>
+    function getLink(e) {
+        
+        var url = '/Admin/getLink';
+        // Send the data using post
+        var send = $.post(url);
+
+        // Put the results in a div
+        send.done(function (data) {
+            if (data=="1") {
+                //toastr.success('Đã cập nhật video mới thành công!', 'Thông báo')
+                alert('Đã cập nhật video mới thành công!');
+                window.location.reload();
+            }
+        });
+
+        send.error(function (err) {
+            console.log(err);
+        })
+
+        //$.ajax({
+        //    url: '/home/getLink',
+        //    type: 'POST',
+        //    cache: false,
+        //    dataType: 'json',
+        //    data: { linktube: document.getElementById("linktube").value },
+        //    success: function (data) {
+        //        console.log(data);
+        //    }
+        //});
+        e.preventDefault();
+    }
+    function getdanhmuc() {
+        var keyword = document.getElementById("cat_video").value;
+        if (keyword == "") {
+            $("#cat_video_id").val(0);
+        }
+        var urlSearch = '/Admin/getcatvideo?keyword=';
+        $('#cat_video').autocomplete({
+            source: urlSearch + keyword,
+            select: function (event, ui) {
+                $("#cat_video").val(ui.item.label);
+                $("#cat_video_id").val(ui.item.value);
+                return false;
+            },
+            minLength: 1,
+        });
+    }
+</script>
+<script src="~/Scripts/toastr.min.js"></script>

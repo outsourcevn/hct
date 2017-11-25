@@ -5,6 +5,13 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="hoccattocModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="cat">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="505" />
+        </EntityType>
         <EntityType Name="customer_code">
           <Key>
             <PropertyRef Name="id" />
@@ -49,6 +56,7 @@
           <Property Name="cat_id" Type="int" />
         </EntityType>
         <EntityContainer Name="hoccattocModelStoreContainer">
+          <EntitySet Name="cat" EntityType="Self.cat" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="customer_code" EntityType="Self.customer_code" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="customers" EntityType="Self.customers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="video" EntityType="Self.video" Schema="dbo" store:Type="Tables" />
@@ -88,6 +96,7 @@
           <EntitySet Name="customer_code" EntityType="Self.customer_code" />
           <EntitySet Name="videos" EntityType="Self.video" />
           <EntitySet Name="customers" EntityType="hoccattocModel.customer" />
+          <EntitySet Name="cats" EntityType="hoccattocModel.cat" />
         </EntityContainer>
         <EntityType Name="customer">
           <Key>
@@ -104,6 +113,13 @@
           <Property Name="identify" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="address" Type="String" MaxLength="501" FixedLength="false" Unicode="true" />
           <Property Name="is_paid" Type="Int32" />
+        </EntityType>
+        <EntityType Name="cat">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="505" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -152,6 +168,14 @@
                 <ScalarProperty Name="pass" ColumnName="pass" />
                 <ScalarProperty Name="phone" ColumnName="phone" />
                 <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="cats">
+            <EntityTypeMapping TypeName="hoccattocModel.cat">
+              <MappingFragment StoreEntitySet="cat">
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>

@@ -28,5 +28,6 @@ namespace HocCatToc.Models
         public virtual DbSet<customer_code> customer_code { get; set; }
         public virtual DbSet<video> videos { get; set; }
         public virtual DbSet<customer> customers { get; set; }
+        public virtual DbSet<cat> cats { get; set; }
     }
 }

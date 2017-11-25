@@ -40,7 +40,8 @@
             <td>@item.date_time</td>
             <td><a href="#" onclick="openCustomer(@item.id, '@item.name', '@item.email','@item.phone')">Sửa</a></td>
             <td><a href="#" onclick="confirmDelCustomer(@item.id,'@item.email');">Xóa</a></td>
-            @*<td><a href="#" onclick="confirmAdmin(@item.id);">Đặt Làm Admin</a></td>*@
+            <td><a href="#" onclick="generate(@item.id);">Cung cấp mã học</a></td>
+            <td><a href="#" onclick="confirmAdmin(@item.id,1);">Đặt Làm Admin</a></td>
         </tr>
     }
 </table>
@@ -71,3 +72,19 @@
     var url_addUpdateCustomer = '@Url.Action("addUpdateCustomer","Admin")', url_deleteCustomer = '@Url.Action("deleteCustomer", "Admin")';
 </script>
 <script type="text/javascript" src="~/Scripts/Customer.js"></script>
+<script>
+    function confirmAdmin(id, val) {
+        $.ajax({
+            url: "/Admin/confirmAdmin", type: 'post',
+            data: { id: id, val: val },
+            success: function (rs) {
+                if (rs == '1') {
+                    alert("Đã xác nhận quyền admin");
+                    location.reload();
+                } else {
+                    alert(rs);
+                }
+            }
+        });
+    }
+</script>
