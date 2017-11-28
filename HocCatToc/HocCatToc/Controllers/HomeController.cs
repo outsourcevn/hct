@@ -118,16 +118,26 @@ namespace HocCatToc.Controllers
                     ct.points = 100;
                     db.customers.Add(ct);
                     db.SaveChanges();
-                    //Cộng điểm cho người giới thiệu
-                    //if (ref_phone != null && ref_phone != "")
-                    //{
-                    //    if (db.customers.Any(o => o.phone == ref_phone))
-                    //    {
-                    //        var bnu = db.customers.Where(o => o.phone == ref_phone).OrderBy(o => o.id).FirstOrDefault();
-                    //        int? bnp = db.config_bonus_point.Find(1).ref_point;
-                    //        db.Database.ExecuteSqlCommand("update customers set points=points+" + bnp + " where id=" + bnu.id);
-                    //    }
-                    //}
+                    //Chèn code tạm cho user này
+                    var svideos = db.videos.ToList();
+                    for (int jj = 0; jj < svideos.Count;jj++)
+                    {
+                        customer_code cc = new customer_code();
+                        cc.customer_id = ct.id;
+                        cc.video_id = svideos[jj].id;
+                        db.customer_code.Add(cc);
+                        db.SaveChanges();
+                    }
+                        //Cộng điểm cho người giới thiệu
+                        //if (ref_phone != null && ref_phone != "")
+                        //{
+                        //    if (db.customers.Any(o => o.phone == ref_phone))
+                        //    {
+                        //        var bnu = db.customers.Where(o => o.phone == ref_phone).OrderBy(o => o.id).FirstOrDefault();
+                        //        int? bnp = db.config_bonus_point.Find(1).ref_point;
+                        //        db.Database.ExecuteSqlCommand("update customers set points=points+" + bnp + " where id=" + bnu.id);
+                        //    }
+                        //}
                     field.Add("user_id", ct.id.ToString());
                     return Api("success", field, "Đăng ký thành công!");
                 }
@@ -201,20 +211,36 @@ namespace HocCatToc.Controllers
                 if (keyword == null) keyword = "";
                 DateTime dtn = DateTime.Now;
                 //var p = (from q in db.videos where q.name.Contains(keyword) select q).OrderBy(o => o.id).ToList();
+                //var p = (from q in db.customers
+                //         where q.id==user_id
+                //         join q2 in db.customer_code on q.id equals q2.customer_id into cc
+                //         from cc1 in cc.DefaultIfEmpty()
+                //         join q3 in db.videos on cc1.video_id equals q3.id into cc2 from cc3 in cc2.DefaultIfEmpty()                                           
+                //         select new
+                //         {
+                //             id=cc3.id,
+                //             create_date = cc3.create_date,
+                //             des = cc3.des,
+                //             image = cc3.img,
+                //             link = cc3.link,
+                //             name = cc3.name,
+                //             code=cc1.code
+                //         }).Where(o=>o.name.Contains(keyword)).OrderByDescending(o => o.id).ToList();
                 var p = (from q in db.customers
-                         where q.id==user_id
-                         join q2 in db.customer_code on q.id equals q2.customer_id 
-                         join q3 in db.videos on q2.video_id equals q3.id
+                         where q.id == user_id
+                         from q2 in db.customer_code.Where(o => o.customer_id == q.id).DefaultIfEmpty()
+                         from q3 in db.videos.Where(x => x.id == q2.video_id).DefaultIfEmpty()
                          select new
                          {
-                             id=q3.id,
+                             id = q3.id,
                              create_date = q3.create_date,
-                             des=q3.des,
-                             image=q3.img,
-                             link=q3.link,
-                             name=q3.name,
-                             code=q2.code
-                         }).Where(o=>o.name.Contains(keyword)).OrderByDescending(o => o.id).ToList();
+                             des = q3.des,
+                             image = q3.img,
+                             link = q3.link,
+                             name = q3.name,
+                             code = q2.code
+                         }).Where(o => o.name.Contains(keyword)).OrderByDescending(o => o.id).ToList();
+
                 field.Add("list", JsonConvert.SerializeObject(p));
                 return ApiArray("success", field, "Danh sách các video");
             }
