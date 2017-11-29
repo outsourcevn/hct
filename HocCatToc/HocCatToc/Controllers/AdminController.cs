@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using Google.Apis.YouTube.v3;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+using System.Configuration;
 namespace HocCatToc.Controllers
 {
     public class AdminController : Controller
@@ -67,6 +68,66 @@ namespace HocCatToc.Controllers
                     return RedirectToAction("Login", new { message = ViewBag.message });
                 
             }
+        }
+        [HttpPost]
+        public ActionResult ResetEmail(string email)
+        {
+            try
+            {
+                if (db.customers.Any(o => o.email == email))
+                {
+                    string mailuser = ConfigurationManager.AppSettings["mailuser"];
+                    string mailpass = ConfigurationManager.AppSettings["mailpass"];//localhost:59340
+                    string link = "http://hoccattoc.edu.vn/home/ConfirmReset2?email=" + email + "&code=" + db.customers.Where(o => o.email == email).OrderBy(o => o.id).FirstOrDefault().pass;//api.smartcheck.vn
+                    if (Config.Sendmail(mailuser, mailpass, email, "Lấy lại mật khẩu của ứng dụng Học Cắt Tóc", "Ai đó đã dùng email này để yêu cầu lấy lại mật khấu, nếu là bạn xin xác nhận click vào đường link này để nhập lại mật khẩu " + link + ", nếu không phải là bạn xin bỏ qua email này.<br>http://HocCatToc.Edu.Vn"))
+                    {
+                        return RedirectToAction("ConfirmReset1", "Home", new { message = "Chúng tôi đã gửi mail đến địa chỉ email bạn cung cấp, vui lòng click vào link trong mail để đặt lại mật khẩu." });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction("Reset", "Home", new { message = "Không tìm thấy email này trong dữ liệu, vui lòng điền email khác mà bạn dùng để đăng ký" });
+                }
+            }
+            catch
+            {
+                return RedirectToAction("Reset", "Home", new { message = "Không tìm thấy email này trong dữ liệu, vui lòng điền email khác mà bạn dùng để đăng ký" });
+            }
+            return View();
+        }
+        public ActionResult ConfirmReset1(string message)
+        {
+            ViewBag.Message = message;
+
+            return View();
+        }
+        public ActionResult ConfirmReset2(string email, string code)
+        {
+
+            if (!db.customers.Any(o => o.email == email && o.pass == code))
+            {
+                return RedirectToAction("Reset", "Admin", new { message = "Không tìm thấy email này trong dữ liệu, vui lòng điền email khác mà bạn dùng để đăng ký" });
+            }
+            ViewBag.code = code;
+            ViewBag.email = email;
+            return View();
+        }
+        [HttpPost]
+        public ActionResult ConfirmReset3(string email, string code, string pass, string pass2)
+        {
+            if (!db.customers.Any(o => o.email == email && o.pass == code))
+            {
+                return RedirectToAction("Reset", "Admin", new { message = "Không tìm thấy email này trong dữ liệu, vui lòng điền email khác mà bạn dùng để đăng ký" });
+            }
+            MD5 md5Hash = MD5.Create();
+            string hash = Config.GetMd5Hash(md5Hash, pass);
+            db.Database.ExecuteSqlCommand("update customers set pass=N'" + hash + "' where email=N'" + email + "' and pass=N'" + code + "'");
+            return RedirectToAction("ConfirmReset4", "Admin", new { message = "Đổi mật khẩu thành công, xin dùng số điện thoại bạn đã đăng ký đăng nhập cùng mật khẩu mới này" });
+        }
+        public ActionResult ConfirmReset4(string message)
+        {
+            ViewBag.Message = message;
+            return View();
         }
         [HttpPost]
         public string confirmAdmin(long id)
