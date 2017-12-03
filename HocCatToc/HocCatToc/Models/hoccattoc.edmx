@@ -37,6 +37,13 @@
           <Property Name="address" Type="nvarchar" MaxLength="501" />
           <Property Name="is_paid" Type="int" />
         </EntityType>
+        <EntityType Name="free">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="code" Type="int" />
+        </EntityType>
         <EntityType Name="video">
           <Key>
             <PropertyRef Name="id" />
@@ -59,6 +66,7 @@
           <EntitySet Name="cat" EntityType="Self.cat" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="customer_code" EntityType="Self.customer_code" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="customers" EntityType="Self.customers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="free" EntityType="Self.free" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="video" EntityType="Self.video" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -97,6 +105,7 @@
           <EntitySet Name="videos" EntityType="Self.video" />
           <EntitySet Name="customers" EntityType="hoccattocModel.customer" />
           <EntitySet Name="cats" EntityType="hoccattocModel.cat" />
+          <EntitySet Name="frees" EntityType="hoccattocModel.free" />
         </EntityContainer>
         <EntityType Name="customer">
           <Key>
@@ -120,6 +129,13 @@
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="505" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="free">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="code" Type="Int32" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -177,6 +193,14 @@
             <EntityTypeMapping TypeName="hoccattocModel.cat">
               <MappingFragment StoreEntitySet="cat">
                 <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="frees">
+            <EntityTypeMapping TypeName="hoccattocModel.free">
+              <MappingFragment StoreEntitySet="free">
+                <ScalarProperty Name="code" ColumnName="code" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -233,6 +233,25 @@ namespace HocCatToc.Controllers
                 return Api("error", field, "Lỗi sql: " + ex.ToString());
             }
         }
+       
+        //Hàm này trả về trường code=1 thì phải kiểm tra code mỗi khi xem, =0 thì thôi kệ cho nó free
+        // CHỈ RIÊNG IOS MỚI PHẢI CHECK. ANDROID Thì không cần vì policy của Android khác        
+        public string getcode()
+        {
+            Dictionary<string, string> field = new Dictionary<string, string>();
+            try
+            {
+                int? code = db.frees.FirstOrDefault().code;
+                field.Add("code", code.ToString());
+                return Api("success", field, "Trả về code thành công!");
+             
+            }
+            catch (Exception ex)
+            {
+                field.Add("code", "");
+                return Api("error", field, "Lỗi sql: " + ex.ToString());
+            }
+        }
         //Hàm này trả về danh sách các voucher sắp xếp giảm dần theo id, mới nhất lên đầu
         //Là những video mà user có id là user_id được phép học, kèm code đi cùng
         //Giải thích các trường
@@ -278,7 +297,7 @@ namespace HocCatToc.Controllers
                              image = q3.img,
                              link = q3.link,
                              name = q3.name,
-                             code = q2.code
+                             code = user_id * 100 + q3.id
                          }).Where(o => o.name.Contains(keyword)).OrderByDescending(o => o.id).ToList();
 
                 field.Add("list", JsonConvert.SerializeObject(p));
@@ -298,7 +317,7 @@ namespace HocCatToc.Controllers
             try
             {
 
-                if (db.customer_code.Any(o => o.video_id == video_id && o.code == code && o.customer_id == user_id))
+                if (db.customer_code.Where(o => o.customer_id == user_id).FirstOrDefault().code!=null && code == user_id * 100 + video_id)//o.video_id == video_id && o.code == code && 
                 {
                     
                     field.Add("true", "1");

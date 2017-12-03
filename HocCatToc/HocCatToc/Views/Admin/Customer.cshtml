@@ -5,6 +5,21 @@
     ViewBag.Title = "Quản Lý Khách Hàng Học Cắt Tóc";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
+<script>
+    function isMoney(id) {
+        $.ajax({
+            url: "/Admin/isMoney", type: 'post',
+            data: { user_id: id },
+            success: function (rs) {
+                if (rs == '1') {
+                    $("#isMoney_" + id).html("<i>Đã đóng tiền</i>");
+                } else {
+                    //$("#isMoney_" + id).html("<i>Đã đóng tiền</i>");
+                }
+            }
+        });
+    }
+</script>
 <h2>@ViewBag.Title</h2>
 <button type="button" class="btn btn-primary" onclick="openCustomer(0)">Thêm Mới</button><br /><br />
 <div class="panel-heading">
@@ -34,6 +49,8 @@
                     {
                         @item.name
                     }*@
+                <p><span style="color:red;" id="isMoney_@item.id"></span></p>
+                <script>isMoney(@item.id);</script>
             </td>
             <td>@item.email</td>
             <td>@item.phone</td>
@@ -87,4 +104,5 @@
             }
         });
     }
+    
 </script>

@@ -292,13 +292,21 @@ namespace HocCatToc.Controllers
             for (int i = 0; i < p.Count; i++)
             {
                 customer_code cc = new customer_code();
-                cc.code = (int)user_id * 100 + i * 10 + DateTime.Now.Day;
+                cc.code = (int)(user_id * 100 + p[i].id);// i * 10 + DateTime.Now.Day;
                 cc.customer_id = user_id;
                 cc.video_id = p[i].id;
                 db.customer_code.Add(cc);
                 db.SaveChanges();
             }
             return "1";
+        }
+        public string isMoney(long? user_id)
+        {
+            if (db.customer_code.Where(o => o.customer_id == user_id).FirstOrDefault().code != null)//o.video_id == video_id && o.code == code && 
+            {
+                return "1";
+            }
+            return "0";
         }
         public ActionResult Login(string message)
         {
