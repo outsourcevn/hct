@@ -15,7 +15,10 @@ namespace HocCatToc.Controllers
         {
             return View();
         }
-
+        public ActionResult Policy()
+        {
+            return View();
+        }
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
