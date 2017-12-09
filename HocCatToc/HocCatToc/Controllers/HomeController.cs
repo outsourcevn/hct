@@ -288,10 +288,10 @@ namespace HocCatToc.Controllers
                 //             name = cc3.name,
                 //             code=cc1.code
                 //         }).Where(o=>o.name.Contains(keyword)).OrderByDescending(o => o.id).ToList();
-                var p = (from q in db.customers
-                         where q.id == user_id
-                         from q2 in db.customer_code.Where(o => o.customer_id == q.id).DefaultIfEmpty()
-                         from q3 in db.videos.Where(x => x.id == q2.video_id).DefaultIfEmpty()
+                //from q in db.customers
+                //where q.id == user_id
+                //         from q2 in db.customer_code.Where(o => o.customer_id == q.id).DefaultIfEmpty()
+                var p = (from q3 in db.videos 
                          select new
                          {
                              id = q3.id,

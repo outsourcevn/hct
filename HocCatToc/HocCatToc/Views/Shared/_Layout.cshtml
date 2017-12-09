@@ -25,8 +25,8 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    @*@Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")*@
 </head>
 <body id="page-top">
     <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
@@ -36,7 +36,7 @@
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
                 </button>
-                <a class="navbar-brand page-scroll" href="#page-top">Start Bootstrap</a>
+                <a class="navbar-brand page-scroll" href="#page-top"><img src="~/Content/home/img/logo.jpg"/></a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -61,7 +61,7 @@
             <div class="row">
                 <div class="col-sm-7">
                     <div class="header-content">
-                        <div class="header-content-inner">
+                        <div class="header-content-inner" style="background:#808080;opacity: 0.8;filter: alpha(opacity=10);border-radius: 12px;" id="download1">
                             <h1>Học Viện Tóc Quốc Tế đầu tiên của Việt Nam xây dựng học cắt tóc trực tuyến qua internet</h1>
                             <h4>Cài đặt phần mềm, bạn click vào bên dưới tùy thuộc vào máy điện thoại bạn đang dùng là hệ điều hành gì?</h4>
                             <h4>Các dòng Iphone xin chọn Apple, các dòng Sony, Samsung, Oppo, Huawei, Xiaomi cài Android xin chọn Google Play</h4>
@@ -75,7 +75,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-5">
+                @*<div class="col-sm-5">
                     <div class="device-container">
                         <div class="device-mockup iphone6_plus portrait white">
                             <div class="device">
@@ -89,11 +89,11 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>*@
             </div>
         </div>
     </header>
-    <div class="container body-content">
+    <div>
         @RenderBody()
     </div>
     <footer>
