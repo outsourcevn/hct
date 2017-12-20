@@ -49,5 +49,22 @@ namespace HocCatToc.Models
                 return "Thất bại: " + ex.Message;
             }
         }
+        public static string deletevideo(int cpId)
+        {
+            try
+            {
+                using (var db = new hoccattocEntities())
+                {
+                    var cp = new video() { id = cpId };
+                    db.Entry(cp).State = EntityState.Deleted;
+                    db.SaveChanges();
+                }
+                return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                return "Thất bại: " + ex.Message;
+            }
+        }
     }
 }

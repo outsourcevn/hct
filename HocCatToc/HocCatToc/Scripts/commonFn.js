@@ -19,7 +19,11 @@ function notifyOK() {
     var action = $("#notifyAction").val();
     if (action == "deleteCustomer") {
         deleteCustomer();
-    } else if (action == "deleteCompany") {
+    }
+    else if (action == "deleteVideo") {
+        deleteVideo();
+    }
+    else if (action == "deleteCompany") {
         deleteCompany();
     } else if (action == "deleteVoucher") {
         deleteVoucher();
