@@ -40,21 +40,23 @@
 
         <tr>
             <td>
-                @item.name
-                @*@if (item.is_admin != null)
-                    {
-                        <span style="color:red;"><b>@item.name</b></span>
-                    }
-                    else
-                    {
+                @*@item.name*@
+                @if (item.is_admin != null)
+                {
+                    <p><span style="color:red;"><b>@item.name</b></span></p>
+                }
+                else
+                {
+                    <p>
                         @item.name
-                    }*@
+                    </p>
+                }
                 <p><span style="color:red;" id="isMoney_@item.id"></span></p>
                 <script>isMoney(@item.id);</script>
             </td>
             <td>@item.email</td>
             <td>@item.phone</td>
-            <td>@item.date_time</td>
+            <td>@String.Format("{0:dd/MM/yyyy hh:mm tt}", @item.date_time)</td>
             <td><a href="#" onclick="openCustomer(@item.id, '@item.name', '@item.email','@item.phone')">Sửa</a></td>
             <td><a href="#" onclick="confirmDelCustomer(@item.id,'@item.email');">Xóa</a></td>
             <td><a href="#" onclick="generate(@item.id);">Cung cấp mã học</a></td>
