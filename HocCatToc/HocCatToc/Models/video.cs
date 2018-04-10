@@ -27,5 +27,7 @@ namespace HocCatToc.Models
         public Nullable<System.DateTime> update_date { get; set; }
         public Nullable<int> customer_id { get; set; }
         public Nullable<int> cat_id { get; set; }
+        public Nullable<int> group_id { get; set; }
+        public string group_name { get; set; }
     }
 }

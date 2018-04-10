@@ -23,8 +23,8 @@ function notifyOK() {
     else if (action == "deleteVideo") {
         deleteVideo();
     }
-    else if (action == "deleteCompany") {
-        deleteCompany();
+    else if (action == "deleteGroup") {
+        deleteGroup();
     } else if (action == "deleteVoucher") {
         deleteVoucher();
     } else if (action == "deleteWinning") {
