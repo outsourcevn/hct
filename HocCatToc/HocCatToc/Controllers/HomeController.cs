@@ -86,7 +86,7 @@ namespace HocCatToc.Controllers
 
         }
         [HttpPost]
-        public string register(string name, string email, string phone, string pass, long? user_id, double? key)
+        public string register(string name, string email, string phone, string pass,string group_name,int? group_id, long? user_id, double? key)
         {
             Dictionary<string, string> field = new Dictionary<string, string>();
             try
@@ -119,6 +119,8 @@ namespace HocCatToc.Controllers
                     ct.phone = phone;
                     ct.date_time = DateTime.Now;
                     ct.points = 100;
+                    ct.group_id = group_id;
+                    ct.group_name = group_name;
                     db.customers.Add(ct);
                     db.SaveChanges();
                     //Chèn code tạm cho user này
@@ -154,6 +156,8 @@ namespace HocCatToc.Controllers
                     ct.name = name;
                     ct.pass = hash;
                     ct.phone = phone;
+                    ct.group_id = group_id;
+                    ct.group_name = group_name;
                     //ct.identify = identify;
                     //ct.address = address;
                     ct.date_time = DateTime.Now;
@@ -272,6 +276,7 @@ namespace HocCatToc.Controllers
             {
                 if (keyword == null) keyword = "";
                 DateTime dtn = DateTime.Now;
+                int? grid = db.customers.Find(user_id).group_id;
                 //var p = (from q in db.videos where q.name.Contains(keyword) select q).OrderBy(o => o.id).ToList();
                 //var p = (from q in db.customers
                 //         where q.id==user_id
@@ -291,7 +296,7 @@ namespace HocCatToc.Controllers
                 //from q in db.customers
                 //where q.id == user_id
                 //         from q2 in db.customer_code.Where(o => o.customer_id == q.id).DefaultIfEmpty()
-                var p = (from q3 in db.videos 
+                var p = (from q3 in db.videos where q3.group_id== grid
                          select new
                          {
                              id = q3.id,
@@ -305,6 +310,21 @@ namespace HocCatToc.Controllers
 
                 field.Add("list", JsonConvert.SerializeObject(p));
                 return ApiArray("success", field, "Danh sách các video");
+            }
+            catch (Exception ex)
+            {
+                field.Add("list", "[]");
+                return Api("error", field, "Lỗi sql: " + ex.ToString());
+            }
+        }
+        public string getlistgroup()
+        {
+            Dictionary<string, string> field = new Dictionary<string, string>();
+            try
+            {
+                var p = db.groups.OrderBy(o => o.group_name).ToList();
+                field.Add("list", JsonConvert.SerializeObject(p));
+                return ApiArray("success", field, "Danh sách các group");
             }
             catch (Exception ex)
             {
