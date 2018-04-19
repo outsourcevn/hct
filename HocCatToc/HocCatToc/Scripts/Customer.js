@@ -8,7 +8,7 @@
 }
 
 function saveCustomer() {
-    
+    var group_text = $("#cp_group_id option:selected").text();
     if ($("#cp_name").val() == "") {
         alert("Nhập tên!");
         return;
@@ -21,11 +21,15 @@ function saveCustomer() {
         alert("Nhập phone!");
         return;
     }
+    if ($("#cp_group_id").val() == "") {
+        alert("Chọn học viện!");
+        return;
+    }
     if ($("#cp_pass").val() =="") {
         alert("Nhập mật khẩu!");
         return;
     }
-    if ($("#cp_pass").val() != $("#cp_pass2").val()) {
+    if ($("#cp_pass").val()!="" && $("#cp_pass").val() != $("#cp_pass2").val()) {
         alert("Mật khẩu phải giống nhau!");
         return;
     }
@@ -33,7 +37,8 @@ function saveCustomer() {
         url: url_addUpdateCustomer, type: 'post',
         contentType: 'application/json',
         data: JSON.stringify({
-            ID: $("#cp_ID").val(), name: $("#cp_name").val(), email: $("#cp_email").val(), phone: $("#cp_phone").val(),pass:$("#cp_pass").val()
+            ID: $("#cp_ID").val(), name: $("#cp_name").val(), email: $("#cp_email").val(), phone: $("#cp_phone").val(), pass: $("#cp_pass").val(),
+            group_id:$("#cp_group_id").val(),group_name:group_text
         }),
         success: function (rs) {
             if (rs == '') {

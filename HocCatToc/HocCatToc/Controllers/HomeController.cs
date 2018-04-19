@@ -110,6 +110,15 @@ namespace HocCatToc.Controllers
                 }
                 if (user_id == 0 || user_id == null)
                 {
+                    if (group_id == null)
+                    {
+                        var grus= db.groups.Find(1);
+                        if (grus != null)
+                        {
+                            group_id = grus.id;
+                            group_name = grus.group_name;
+                        }
+                    }
                     MD5 md5Hash = MD5.Create();
                     string hash = Config.GetMd5Hash(md5Hash, pass);
                     customer ct = new customer();

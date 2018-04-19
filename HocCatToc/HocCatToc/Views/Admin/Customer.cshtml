@@ -21,6 +21,16 @@
     }
 </script>
 <h2>@ViewBag.Title</h2>
+<div id="DialogProduct" style="display:none;" class="col-sm-4 dDialog">
+    <div class="dTitle">Chọn nhóm</div>
+    <div class="dDialogContent">
+        <select id="up_cp_group_id"></select>
+    </div>
+    <div class="divBtn">
+        <button type="button" class="btn btn-primary" onclick="confirmUpdateGroup();">Cập nhật Học viện cho User này</button>
+        <button type="button" class="btn btn-primary" onclick="$('#DialogProduct').hide();">Thoát</button>
+    </div>
+</div>
 <button type="button" class="btn btn-primary" onclick="openCustomer(0)">Thêm Mới</button><br /><br />
 <div class="panel-heading">
     <div class="form-inline">
@@ -52,6 +62,7 @@
                     </p>
                 }
                 <p><span style="color:red;" id="isMoney_@item.id"></span></p>
+                <p><span style="color:blue;">Học Viện:@item.group_name</span></p>
                 <script>isMoney(@item.id);</script>
             </td>
             <td>@item.email</td>
@@ -61,6 +72,7 @@
             <td><a href="#" onclick="confirmDelCustomer(@item.id,'@item.email');">Xóa</a></td>
             <td><a href="#" onclick="generate(@item.id);">Cung cấp mã học</a></td>
             <td><a href="#" onclick="confirmAdmin(@item.id,1);">Đặt Làm Admin</a></td>
+            <td><a href="#" onclick="changeGroup(@item.id,@item.group_id);">Đổi Học Viện</a></td>
         </tr>
     }
 </table>
@@ -76,7 +88,9 @@
         <input id="cp_email" type="text" class="form-control" placeholder="Nhập email">
         <p>Phone</p>
         <input id="cp_phone" type="text" class="form-control" placeholder="Nhập phone">
-        <p>Mật khẩu</p>
+        <p>Chọn học của Học viện tóc nào?</p>
+        <select id="cp_group_id" class="form-control" data-live-search="true" ></select>
+        <p>Mật khẩu (để trắng nếu là cập nhật thông tin nhưng không muốn đổi mật khẩu)</p>
         <input id="cp_pass" type="password" class="form-control" placeholder="Nhập mật khẩu">
         <p>Nhập Lại Mật khẩu</p>
         <input id="cp_pass2" type="password" class="form-control" placeholder="Nhập lại mật khẩu">
@@ -92,6 +106,45 @@
 </script>
 <script type="text/javascript" src="~/Scripts/Customer.js"></script>
 <script>
+    var update_user_id = 0;
+    function changeGroup(id,group_id) {
+        update_user_id = id;
+        $("#up_cp_group_id").val(group_id);
+        $("#DialogProduct").show();
+    }
+    function confirmUpdateGroup() {
+        var group_text = $("#up_cp_group_id option:selected").text();
+        $.ajax({
+            url: "/Admin/confirmUpdateGroup", type: 'post',
+            data: {
+                group_id: $("#up_cp_group_id").val(), group_name: group_text, user_id: update_user_id
+            },
+            success: function (rs) {
+                if (rs == "1")
+                    alert("Cập nhật thành công");
+                location.reload();
+            }
+        });
+    }
+    function autofillgroup(val) {
+        $.ajax({
+            url: "/Admin/getautofillgroup", type: 'get',
+            success: function (rs) {
+                //alert(rs);
+                var json = $.parseJSON(rs);
+                if (json.length > 0) {
+                    $("#cp_group_id").html("");
+                    $("#up_cp_group_id").html("");
+                    for (var i = 0; i < json.length; ++i) {                        
+                        $("#cp_group_id").append("<option value=\"" + json[i].id + "\">" + json[i].group_name + "</option>");
+                        $("#up_cp_group_id").append("<option value=\"" + json[i].id + "\">" + json[i].group_name + "</option>");
+                    }
+                    $("#cp_group_id").val(val);                    
+                }
+            }
+        });
+    }
+    autofillgroup(1);
     function confirmAdmin(id, val) {
         $.ajax({
             url: "/Admin/confirmAdmin", type: 'post',
