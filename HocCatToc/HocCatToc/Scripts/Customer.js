@@ -1,9 +1,10 @@
-﻿function openCustomer(id, name, email, phone) {
+﻿function openCustomer(id, name, email, phone,group_id) {
 
     $("#cp_ID").val(id);
     $("#cp_name").val(name);
     $("#cp_email").val(email);
     $("#cp_phone").val(phone);
+    $("#cp_group_id").val(group_id);
     $("#CustomerDialog").show();
 }
 

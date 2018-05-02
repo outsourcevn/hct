@@ -90,9 +90,9 @@
                 <span style="float:right;display:block;position:fixed;right:0px;">
                     @{
                         <text>
-                            Người dùng: <b>@Config.getCookie("company_name")</b>, 
-                            Email: <b>@Config.getCookie("company_email")</b>,  
-                            Điện thoại: <b>@Config.getCookie("company_phone")</b>
+                            Người dùng: <b>@Config.getCookie("user_name")</b>, 
+                            Email: <b>@Config.getCookie("user_email")</b>,  
+                            Điện thoại: <b>@Config.getCookie("user_phone")</b>
                         </text>
                     }                
                 </span>
@@ -102,20 +102,26 @@
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
-                        @if (Config.getCookie("is_admin") == "1") { 
+                        @if (Config.getCookie("is_admin") == "1" || Config.getCookie("is_admin") == "2") { 
                             <li>
                                 <a href="/Admin/Customer"><i class="fa fa-product-hunt fa-fw"></i>Quản lý Khách Hàng</a>
                             </li>
                             <li>
                                 <a href="/Admin/YouTube"><i class="fa fa-product-hunt fa-fw"></i>Quản lý Video</a>
                             </li>
-                            <li>
+                            @*<li>
                                 <a href="/Admin/Code"><i class="fa fa-product-hunt fa-fw"></i>Quản lý hệ thống</a>
-                            </li>
+                            </li>*@
                         }
                         <li>
                             <a href="javascript:document.getElementById('logoutForm').submit();"><i class="fa fa-home fa-fw"></i> Đăng Xuất</a>
                         </li>
+                        @if (Config.getCookie("is_admin") == "")
+                        {
+                            <li>
+                                <a href="/Admin/Login"><i class="fa fa-home fa-fw"></i> Đăng Nhập</a>
+                            </li>
+                        }
                         <li>
                             <a href="/Home/Reset"><i class="fa fa-home fa-fw"></i> Đổi mật khẩu</a>
                         </li>

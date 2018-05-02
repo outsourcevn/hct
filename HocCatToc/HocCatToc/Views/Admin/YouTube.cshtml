@@ -16,7 +16,7 @@
     </div>
 </div>
 <table class="table marginBottom0">
-    <tr><th>Tên video</th><th>Link</th><th>Ảnh</th><th>Ngày Đăng</th></tr>
+    <tr><th>Tên video</th><th>Link</th><th>Ảnh</th><th>Học Viện</th><th>Ngày Đăng</th></tr>
     @foreach (var item in (PagedList<video>)ViewBag.OnePage)
     {
 
@@ -33,7 +33,8 @@
                     }*@
             </td>
             <td>@item.link</td>
-            <td><img src="@item.img"> /></td>
+            <td><img src="@item.img"></td>
+            <td>@item.group_name
             <td>@item.date</td>
             @*<td><a href="#" onclick="openVideo(@item.id,'@item.name','@item.link','@item.img','@item.date','@item.des')">Sửa</a></td>*@
             <td><a href="#" onclick="confirmDelVideo(@item.id,'@item.name');">Xóa</a></td>          

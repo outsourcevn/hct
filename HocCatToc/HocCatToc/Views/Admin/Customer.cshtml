@@ -12,9 +12,9 @@
             data: { user_id: id },
             success: function (rs) {
                 if (rs == '1') {
-                    $("#isMoney_" + id).html("<i>Đã đóng tiền</i>");
+                    $("#isMoney_" + id).html("<i>Đã cấp mã học</i>");
                 } else {
-                    //$("#isMoney_" + id).html("<i>Đã đóng tiền</i>");
+                    $("#isMoney_" + id).html("<i>Chưa cấp mã học</i>");
                 }
             }
         });
@@ -22,13 +22,26 @@
 </script>
 <h2>@ViewBag.Title</h2>
 <div id="DialogProduct" style="display:none;" class="col-sm-4 dDialog">
-    <div class="dTitle">Chọn nhóm</div>
+    <div class="dTitle">Chọn Học Viện</div>
     <div class="dDialogContent">
         <select id="up_cp_group_id"></select>
     </div>
     <div class="divBtn">
         <button type="button" class="btn btn-primary" onclick="confirmUpdateGroup();">Cập nhật Học viện cho User này</button>
         <button type="button" class="btn btn-primary" onclick="$('#DialogProduct').hide();">Thoát</button>
+    </div>
+</div>
+<div id="DialogStyleAdmin" style="display:none;" class="col-sm-4 dDialog">
+    <div class="dTitle">Chọn Kiểu Admin</div>
+    <div class="dDialogContent">
+        <select id="up_type_admin">
+            <option value="1" selected>Quản lý Học viện</option>
+            <option value="2">Super Admin</option>
+        </select>
+    </div>
+    <div class="divBtn">
+        <button type="button" class="btn btn-primary" onclick="confirmUpdateAdmin();">Cập nhật</button>
+        <button type="button" class="btn btn-primary" onclick="$('#DialogStyleAdmin').hide();">Thoát</button>
     </div>
 </div>
 <button type="button" class="btn btn-primary" onclick="openCustomer(0)">Thêm Mới</button><br /><br />
@@ -44,23 +57,13 @@
     </div>
 </div>
 <table class="table marginBottom0">
-    <tr><th>Họ Tên</th><th>Email</th><th>Số Phone</th><th>Ngày Đăng Ký</th></tr>
+    <tr><th>Họ Tên</th><th>Email</th><th>Số Phone</th><th>Ngày Đăng Ký</th><th>Kiểu Thành Viên</th><th></th></tr>
     @foreach (var item in (PagedList<customer>)ViewBag.OnePage)
     {
 
         <tr>
             <td>
-                @*@item.name*@
-                @if (item.is_admin != null)
-                {
-                    <p><span style="color:red;"><b>@item.name</b></span></p>
-                }
-                else
-                {
-                    <p>
-                        @item.name
-                    </p>
-                }
+                @item.name                
                 <p><span style="color:red;" id="isMoney_@item.id"></span></p>
                 <p><span style="color:blue;">Học Viện:@item.group_name</span></p>
                 <script>isMoney(@item.id);</script>
@@ -68,11 +71,32 @@
             <td>@item.email</td>
             <td>@item.phone</td>
             <td>@String.Format("{0:dd/MM/yyyy hh:mm tt}", @item.date_time)</td>
-            <td><a href="#" onclick="openCustomer(@item.id, '@item.name', '@item.email','@item.phone')">Sửa</a></td>
-            <td><a href="#" onclick="confirmDelCustomer(@item.id,'@item.email');">Xóa</a></td>
-            <td><a href="#" onclick="generate(@item.id);">Cung cấp mã học</a></td>
-            <td><a href="#" onclick="confirmAdmin(@item.id,1);">Đặt Làm Admin</a></td>
-            <td><a href="#" onclick="changeGroup(@item.id,@item.group_id);">Đổi Học Viện</a></td>
+            <td>
+                @if (item.is_admin != null)
+                {
+                    if (item.is_admin == 1)
+                    {
+                        <p><span style="color:red;"><b>Quản lý học viện</b></span></p>
+                    }
+                    else
+                    {
+                        <p><span style="color:red;"><b>Super admin</b></span></p>
+                    }
+                }
+                else
+                {
+                    <p>
+                       Học viên
+                    </p>
+                }
+            </td>
+            <td>
+                <a href="#" onclick="openCustomer(@item.id, '@item.name', '@item.email','@item.phone',@item.group_id)">Sửa</a>&nbsp;
+                -&nbsp;<a href="#" onclick="confirmDelCustomer(@item.id,'@item.email');">Xóa</a>&nbsp;
+                -&nbsp;<a href="#" onclick="generate(@item.id);">Cung cấp mã học</a>&nbsp;
+                -&nbsp;<a href="#" onclick="confirmAdmin(@item.id,@item.is_admin);">Đặt Làm Admin</a>&nbsp;
+                -&nbsp;<a href="#" onclick="changeGroup(@item.id,@item.group_id);">Đổi Học Viện</a>
+            </td>
         </tr>
     }
 </table>
@@ -107,6 +131,7 @@
 <script type="text/javascript" src="~/Scripts/Customer.js"></script>
 <script>
     var update_user_id = 0;
+    
     function changeGroup(id,group_id) {
         update_user_id = id;
         $("#up_cp_group_id").val(group_id);
@@ -146,12 +171,19 @@
     }
     autofillgroup(1);
     function confirmAdmin(id, val) {
+        update_user_id = id;
+        $("#up_type_admin").val(val);
+        $("#DialogStyleAdmin").show();
+        
+    }
+    function confirmUpdateAdmin() {
+        var valid = $("#up_type_admin").val();
         $.ajax({
             url: "/Admin/confirmAdmin", type: 'post',
-            data: { id: id, val: val },
+            data: { id: update_user_id, val: valid },
             success: function (rs) {
                 if (rs == '1') {
-                    alert("Đã xác nhận quyền admin");
+                    alert("Đã xác nhận quyền: " + $("#up_type_admin option:selected").text());
                     location.reload();
                 } else {
                     alert(rs);
@@ -159,5 +191,4 @@
             }
         });
     }
-    
 </script>
