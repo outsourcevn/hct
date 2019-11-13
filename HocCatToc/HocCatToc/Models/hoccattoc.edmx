@@ -21,6 +21,14 @@
           <Property Name="video_id" Type="bigint" />
           <Property Name="code" Type="int" />
         </EntityType>
+        <EntityType Name="customer_group">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" Nullable="false" />
+          <Property Name="customer_id" Type="bigint" />
+          <Property Name="group_id" Type="int" />
+        </EntityType>
         <EntityType Name="customers">
           <Key>
             <PropertyRef Name="id" />
@@ -38,6 +46,8 @@
           <Property Name="is_paid" Type="int" />
           <Property Name="group_id" Type="int" />
           <Property Name="group_name" Type="nvarchar" MaxLength="150" />
+          <Property Name="group_id_list" Type="nvarchar" MaxLength="501" />
+          <Property Name="token" Type="nvarchar" MaxLength="501" />
         </EntityType>
         <EntityType Name="free">
           <Key>
@@ -55,6 +65,17 @@
           <Property Name="email" Type="nvarchar" MaxLength="50" />
           <Property Name="phone" Type="nvarchar" MaxLength="50" />
           <Property Name="address" Type="nvarchar" MaxLength="501" />
+          <Property Name="price" Type="int" />
+        </EntityType>
+        <EntityType Name="links">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="youtube" Type="nvarchar" MaxLength="501" />
+          <Property Name="zalo" Type="nvarchar" MaxLength="501" />
+          <Property Name="fanpage" Type="nvarchar" MaxLength="501" />
+          <Property Name="facebook" Type="nvarchar" MaxLength="501" />
         </EntityType>
         <EntityType Name="video">
           <Key>
@@ -75,35 +96,42 @@
           <Property Name="cat_id" Type="int" />
           <Property Name="group_id" Type="int" />
           <Property Name="group_name" Type="nvarchar" MaxLength="150" />
+          <Property Name="is_free" Type="tinyint" />
+          <Property Name="group_id_list" Type="nvarchar" MaxLength="501" />
+        </EntityType>
+        <EntityType Name="video_group">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="video_id" Type="bigint" />
+          <Property Name="group_id" Type="int" />
         </EntityType>
         <EntityContainer Name="hoccattocModelStoreContainer">
           <EntitySet Name="cat" EntityType="Self.cat" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="customer_code" EntityType="Self.customer_code" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="customer_group" EntityType="Self.customer_group" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="customers" EntityType="Self.customers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="free" EntityType="Self.free" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="groups" EntityType="Self.groups" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="links" EntityType="Self.links" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="video" EntityType="Self.video" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="video_group" EntityType="Self.video_group" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="hoccattocModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="customer_code">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="customer_id" Type="Int64" />
-          <Property Name="video_id" Type="Int64" />
-          <Property Name="code" Type="Int32" />
-        </EntityType>
         <EntityContainer Name="hoccattocEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="customer_code" EntityType="Self.customer_code" />
           <EntitySet Name="cats" EntityType="hoccattocModel.cat" />
-          <EntitySet Name="frees" EntityType="hoccattocModel.free" />
+          <EntitySet Name="customer_code" EntityType="hoccattocModel.customer_code" />
           <EntitySet Name="customers" EntityType="hoccattocModel.customer" />
-          <EntitySet Name="videos" EntityType="hoccattocModel.video" />
+          <EntitySet Name="frees" EntityType="hoccattocModel.free" />
           <EntitySet Name="groups" EntityType="hoccattocModel.group" />
+          <EntitySet Name="videos" EntityType="hoccattocModel.video" />
+          <EntitySet Name="links" EntityType="hoccattocModel.link" />
+          <EntitySet Name="customer_group" EntityType="hoccattocModel.customer_group" />
+          <EntitySet Name="video_group" EntityType="hoccattocModel.video_group" />
         </EntityContainer>
         <EntityType Name="cat">
           <Key>
@@ -112,11 +140,13 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="505" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="free">
+        <EntityType Name="customer_code">
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="customer_id" Type="Int64" />
+          <Property Name="video_id" Type="Int64" />
           <Property Name="code" Type="Int32" />
         </EntityType>
         <EntityType Name="customer">
@@ -136,6 +166,26 @@
           <Property Name="is_paid" Type="Int32" />
           <Property Name="group_id" Type="Int32" />
           <Property Name="group_name" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="group_id_list" Type="String" MaxLength="501" FixedLength="false" Unicode="true" />
+          <Property Name="token" Type="String" MaxLength="501" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="free">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="code" Type="Int32" />
+        </EntityType>
+        <EntityType Name="group">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="group_name" Type="String" MaxLength="501" FixedLength="false" Unicode="true" />
+          <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="address" Type="String" MaxLength="501" FixedLength="false" Unicode="true" />
+          <Property Name="price" Type="Int32" />
         </EntityType>
         <EntityType Name="video">
           <Key>
@@ -156,33 +206,41 @@
           <Property Name="cat_id" Type="Int32" />
           <Property Name="group_id" Type="Int32" />
           <Property Name="group_name" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="is_free" Type="Byte" />
+          <Property Name="group_id_list" Type="String" MaxLength="501" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="group">
+        <EntityType Name="link">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="group_name" Type="String" MaxLength="501" FixedLength="false" Unicode="true" />
-          <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="address" Type="String" MaxLength="501" FixedLength="false" Unicode="true" />
+          <Property Name="youtube" Type="String" MaxLength="501" FixedLength="false" Unicode="true" />
+          <Property Name="zalo" Type="String" MaxLength="501" FixedLength="false" Unicode="true" />
+          <Property Name="fanpage" Type="String" MaxLength="501" FixedLength="false" Unicode="true" />
+          <Property Name="facebook" Type="String" MaxLength="501" FixedLength="false" Unicode="true" />
         </EntityType>
-      </Schema>
+        <EntityType Name="customer_group">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" />
+          <Property Name="customer_id" Type="Int64" />
+          <Property Name="group_id" Type="Int32" />
+        </EntityType>
+        <EntityType Name="video_group">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="video_id" Type="Int64" />
+          <Property Name="group_id" Type="Int32" />
+        </EntityType>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="hoccattocModelStoreContainer" CdmEntityContainer="hoccattocEntities">
-          <EntitySetMapping Name="customer_code">
-            <EntityTypeMapping TypeName="hoccattocModel.customer_code">
-              <MappingFragment StoreEntitySet="customer_code">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="customer_id" ColumnName="customer_id" />
-                <ScalarProperty Name="video_id" ColumnName="video_id" />
-                <ScalarProperty Name="code" ColumnName="code" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="cats">
             <EntityTypeMapping TypeName="hoccattocModel.cat">
               <MappingFragment StoreEntitySet="cat">
@@ -191,10 +249,12 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="frees">
-            <EntityTypeMapping TypeName="hoccattocModel.free">
-              <MappingFragment StoreEntitySet="free">
+          <EntitySetMapping Name="customer_code">
+            <EntityTypeMapping TypeName="hoccattocModel.customer_code">
+              <MappingFragment StoreEntitySet="customer_code">
                 <ScalarProperty Name="code" ColumnName="code" />
+                <ScalarProperty Name="video_id" ColumnName="video_id" />
+                <ScalarProperty Name="customer_id" ColumnName="customer_id" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -202,6 +262,8 @@
           <EntitySetMapping Name="customers">
             <EntityTypeMapping TypeName="hoccattocModel.customer">
               <MappingFragment StoreEntitySet="customers">
+                <ScalarProperty Name="token" ColumnName="token" />
+                <ScalarProperty Name="group_id_list" ColumnName="group_id_list" />
                 <ScalarProperty Name="group_name" ColumnName="group_name" />
                 <ScalarProperty Name="group_id" ColumnName="group_id" />
                 <ScalarProperty Name="is_paid" ColumnName="is_paid" />
@@ -218,9 +280,31 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="frees">
+            <EntityTypeMapping TypeName="hoccattocModel.free">
+              <MappingFragment StoreEntitySet="free">
+                <ScalarProperty Name="code" ColumnName="code" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="groups">
+            <EntityTypeMapping TypeName="hoccattocModel.group">
+              <MappingFragment StoreEntitySet="groups">
+                <ScalarProperty Name="price" ColumnName="price" />
+                <ScalarProperty Name="address" ColumnName="address" />
+                <ScalarProperty Name="phone" ColumnName="phone" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="group_name" ColumnName="group_name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="videos">
             <EntityTypeMapping TypeName="hoccattocModel.video">
               <MappingFragment StoreEntitySet="video">
+                <ScalarProperty Name="group_id_list" ColumnName="group_id_list" />
+                <ScalarProperty Name="is_free" ColumnName="is_free" />
                 <ScalarProperty Name="group_name" ColumnName="group_name" />
                 <ScalarProperty Name="group_id" ColumnName="group_id" />
                 <ScalarProperty Name="cat_id" ColumnName="cat_id" />
@@ -239,13 +323,31 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="groups">
-            <EntityTypeMapping TypeName="hoccattocModel.group">
-              <MappingFragment StoreEntitySet="groups">
-                <ScalarProperty Name="address" ColumnName="address" />
-                <ScalarProperty Name="phone" ColumnName="phone" />
-                <ScalarProperty Name="email" ColumnName="email" />
-                <ScalarProperty Name="group_name" ColumnName="group_name" />
+          <EntitySetMapping Name="links">
+            <EntityTypeMapping TypeName="hoccattocModel.link">
+              <MappingFragment StoreEntitySet="links">
+                <ScalarProperty Name="facebook" ColumnName="facebook" />
+                <ScalarProperty Name="fanpage" ColumnName="fanpage" />
+                <ScalarProperty Name="zalo" ColumnName="zalo" />
+                <ScalarProperty Name="youtube" ColumnName="youtube" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="customer_group">
+            <EntityTypeMapping TypeName="hoccattocModel.customer_group">
+              <MappingFragment StoreEntitySet="customer_group">
+                <ScalarProperty Name="group_id" ColumnName="group_id" />
+                <ScalarProperty Name="customer_id" ColumnName="customer_id" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="video_group">
+            <EntityTypeMapping TypeName="hoccattocModel.video_group">
+              <MappingFragment StoreEntitySet="video_group">
+                <ScalarProperty Name="group_id" ColumnName="group_id" />
+                <ScalarProperty Name="video_id" ColumnName="video_id" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>

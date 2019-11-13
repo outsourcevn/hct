@@ -29,5 +29,7 @@ namespace HocCatToc.Models
         public Nullable<int> cat_id { get; set; }
         public Nullable<int> group_id { get; set; }
         public string group_name { get; set; }
+        public Nullable<byte> is_free { get; set; }
+        public string group_id_list { get; set; }
     }
 }

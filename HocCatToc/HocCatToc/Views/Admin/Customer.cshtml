@@ -65,7 +65,7 @@
             <td>
                 @item.name                
                 <p><span style="color:red;" id="isMoney_@item.id"></span></p>
-                <p><span style="color:blue;">Học Viện:@item.group_name</span></p>
+                <p><span style="color:blue;">Gói Học:@item.group_name</span></p>
                 <script>isMoney(@item.id);</script>
             </td>
             <td>@item.email</td>
@@ -76,7 +76,7 @@
                 {
                     if (item.is_admin == 1)
                     {
-                        <p><span style="color:red;"><b>Quản lý học viện</b></span></p>
+                        <p><span style="color:red;"><b>Quản lý gói học</b></span></p>
                     }
                     else
                     {
@@ -91,9 +91,9 @@
                 }
             </td>
             <td>
-                <a href="#" onclick="openCustomer(@item.id, '@item.name', '@item.email','@item.phone',@item.group_id)">Sửa</a>&nbsp;
+                <a href="#" onclick="openCustomer(@item.id, '@item.name', '@item.email','@item.phone',@item.group_id,'@item.group_id_list')">Sửa</a>&nbsp;
                 -&nbsp;<a href="#" onclick="confirmDelCustomer(@item.id,'@item.email');">Xóa</a>&nbsp;
-                -&nbsp;<a href="#" onclick="generate(@item.id);">Cung cấp mã học</a>&nbsp;
+                -&nbsp;<a href="#" onclick="generate(@item.id,'@item.group_id_list');">Cung cấp mã học</a>&nbsp;
                 -&nbsp;<a href="#" onclick="confirmAdmin(@item.id,@item.is_admin);">Đặt Làm Admin</a>&nbsp;
                 -&nbsp;<a href="#" onclick="changeGroup(@item.id,@item.group_id);">Đổi Học Viện</a>
             </td>
@@ -102,29 +102,46 @@
 </table>
 @Html.PagedListPager((IPagedList)ViewBag.OnePage, page => Url.Action("Customer", new { page }))
 
-<div id="CustomerDialog" style="display:none;" class="col-sm-4 dDialog">
+<div id="CustomerDialog" style="display:none;left:10px;z-index:100000;border:solid 5px;background:#00ffff;" class="col-sm-12 dDialog">
     <div class="dTitle">Thêm/Sửa</div>
     <div class="dDialogContent">
-        <input type="hidden" id="cp_ID" />
-        <p>Họ Tên</p>
-        <input id="cp_name" type="text" class="form-control" placeholder="Họ tên">
-        <p>Email</p>
-        <input id="cp_email" type="text" class="form-control" placeholder="Nhập email">
-        <p>Phone</p>
-        <input id="cp_phone" type="text" class="form-control" placeholder="Nhập phone">
-        <p>Chọn học của Học viện tóc nào?</p>
-        <select id="cp_group_id" class="form-control" data-live-search="true" ></select>
-        <p>Mật khẩu (để trắng nếu là cập nhật thông tin nhưng không muốn đổi mật khẩu)</p>
-        <input id="cp_pass" type="password" class="form-control" placeholder="Nhập mật khẩu">
-        <p>Nhập Lại Mật khẩu</p>
-        <input id="cp_pass2" type="password" class="form-control" placeholder="Nhập lại mật khẩu">
-        <div class="divBtn">
-            <button type="button" class="btn btn-primary" onclick="saveCustomer()">Đồng Ý</button>
-            <button type="button" class="btn btn-primary" onclick="closeDDialog('#CustomerDialog')">Hủy</button>
+        <div class="col-md-6">
+            <input type="hidden" id="cp_ID" />
+            <p>Họ Tên</p>
+            <input id="cp_name" type="text" class="form-control" placeholder="Họ tên">
+            <p>Email</p>
+            <input id="cp_email" type="text" class="form-control" placeholder="Nhập email">
+            <p>Phone</p>
+            <input id="cp_phone" type="text" class="form-control" placeholder="Nhập phone">
+        </div>
+        <div class="col-md-6">
+            <p>Gói học nào? (Giữ Ctrl + các gói nếu video thuộc nhiều gói)</p>
+            <select id="cp_group_id" class="form-control" style="height:100px;" data-live-search="true" multiple="multiple"></select>
+            <p>Mật khẩu (để trắng nếu là cập nhật thông tin nhưng không muốn đổi mật khẩu)</p>
+            <input id="cp_pass" type="password" class="form-control" placeholder="Nhập mật khẩu">
+            <p>Nhập Lại Mật khẩu</p>
+            <input id="cp_pass2" type="password" class="form-control" placeholder="Nhập lại mật khẩu">
+            <div class="divBtn">
+                <button type="button" id="btnsaveCustomer" class="btn btn-primary" onclick="saveCustomer()">Đồng Ý</button>
+                <button type="button" class="btn btn-primary" onclick="closeDDialog('#CustomerDialog')">Thoát</button>
+            </div>
         </div>
     </div>
 </div>
-
+<div id="CustomerDialog2" style="display:none;left:10px;z-index:100000;border:solid 5px;background:#00ffff;" class="col-sm-12 dDialog">
+    <div class="dTitle">Bạn cấp mã học cho những gói học nào?</div>
+    <div class="dDialogContent">        
+        <input type="hidden" id="cp_ID2" />
+        <div class="col-md-12">
+            <p>Gói học nào? (Giữ Ctrl + các gói nếu video thuộc nhiều gói)</p>
+            <select id="cp_group_id2" class="form-control" style="height:100px;" data-live-search="true" multiple="multiple"></select>            
+            <div class="divBtn">
+                <button type="button" id="btnsaveGroup" class="btn btn-primary" onclick="saveGroup();">Đồng Ý</button>
+                <button type="button" class="btn btn-primary" onclick="closeDDialog('#CustomerDialog2');">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script type="text/javascript">
     var url_addUpdateCustomer = '@Url.Action("addUpdateCustomer","Admin")', url_deleteCustomer = '@Url.Action("deleteCustomer", "Admin")';
 </script>
@@ -159,12 +176,12 @@
                 var json = $.parseJSON(rs);
                 if (json.length > 0) {
                     $("#cp_group_id").html("");
-                    $("#up_cp_group_id").html("");
-                    for (var i = 0; i < json.length; ++i) {                        
+                    $("#cp_group_id2").html("");                  
+                    for (var i = 0; i < json.length; ++i) {
                         $("#cp_group_id").append("<option value=\"" + json[i].id + "\">" + json[i].group_name + "</option>");
-                        $("#up_cp_group_id").append("<option value=\"" + json[i].id + "\">" + json[i].group_name + "</option>");
+                        $("#cp_group_id2").append("<option value=\"" + json[i].id + "\">" + json[i].group_name + "</option>");                        
                     }
-                    $("#cp_group_id").val(val);                    
+                   
                 }
             }
         });

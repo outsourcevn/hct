@@ -1,0 +1,129 @@
+﻿@using PagedList.Mvc;
+@using PagedList;
+@using HocCatToc.Models;
+@{
+    ViewBag.Title = "Danh sách Link";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+<button type="button" class="btn btn-primary" onclick="openVideo(0)">Thêm Mới</button><br /><br />
+
+<table class="table marginBottom0">
+    <tr><th>YouTube</th><th>Zalo</th><th>Fanpage</th><th>Facebook</th><th></th></tr>
+    @foreach (var item in (PagedList<link>)ViewBag.OnePage)
+    {
+
+        <tr>
+            <td>
+                @item.youtube
+               
+            </td>
+            <td>@item.zalo</td>
+            <td>@item.fanpage</td>
+            <td>@item.facebook
+            <td><a href="#" onclick="openVideo(@item.id,'@item.youtube','@item.zalo','@item.fanpage','@item.facebook')">Sửa</a></td>
+           
+        </tr>
+    }
+</table>
+@Html.PagedListPager((IPagedList)ViewBag.OnePage, page => Url.Action("Link", new { page }))
+<link href="~/Scripts/dropzone/dropzone.css" rel="stylesheet" />
+<script src="~/Scripts/dropzone/dropzone.js"></script>
+<div id="VideoDialog" style="display:none;left:10px;z-index:100000;border:solid 5px;background:#00ffff;" class="col-sm-12 dDialog">
+    <div class="dTitle">Thêm/Sửa</div>
+    <div class="dDialogContent">
+        <div class="col-md-6">
+            <input type="hidden" id="cp_ID" />
+            <p>Link youtube</p>
+            <input id="cp_youtube" type="text" class="form-control" placeholder="Nhập link youtube">
+            <p>Link facebook group</p>
+            <input id="cp_facebook" type="text" class="form-control" placeholder="Nhập link facebook group">
+            <p>Link zalo</p>
+            <input id="cp_zalo" type="text" class="form-control" placeholder="Nhập link zalo">
+            <p>Link fanpage facebook</p>
+            <input id="cp_fanpage" type="text" class="form-control" placeholder="Nhập link facebook">
+        </div>
+        
+        <div class="divBtn">
+            <button type="button" class="btn btn-primary" onclick="saveVideo()" id="btdsavevideo">Đồng Ý</button>
+            <button type="button" class="btn btn-primary" onclick="closeDDialog('#VideoDialog')">Hủy</button>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var url_addUpdateVideo = '@Url.Action("addUpdateLink", "Admin")', url_deleteVideo = '@Url.Action("deleteLink", "Admin")';
+</script>
+<script type="text/javascript" src="~/Scripts/Video.js"></script>
+<script>
+    function openVideo(id, youtube, zalo, fanpage, facebook) {
+        $("#cp_ID").val(id);
+        $("#cp_youtube").val(youtube);
+        $("#cp_zalo").val(zalo);
+        $("#cp_fanpage").val(fanpage);
+        $("#cp_facebook").val(facebook);        
+        $("#VideoDialog").show();
+    }
+
+    function saveVideo() {
+
+      
+        if ($("#cp_youtube").val() == "") {
+            alert("Nhập youtube!");
+            return;
+        }
+        if ($("#cp_facebook").val() == "") {
+            alert("Nhập facebook group!");
+            return;
+        }
+        if ($("#cp_zalo").val() == "") {
+            alert("Nhập zalo!");
+            return;
+        }
+        if ($("#cp_fanpage").val() == "") {
+            alert("Nhập fanpage!");
+            return;
+        }
+
+       
+        
+        document.getElementById("btdsavevideo").disabled = true;
+        $.ajax({
+            url: url_addUpdateVideo, type: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                ID: $("#cp_ID").val(), youtube: $("#cp_youtube").val(), zalo: $("#cp_zalo").val(), facebook: $("#cp_facebook").val(), fanpage: document.getElementById("cp_fanpage").value
+            }),
+            success: function (rs) {
+                if (rs != '0') {
+                    location.reload();
+                } else {
+                    alert(rs);
+                    document.getElementById("btdsavevideo").disabled = false;
+                }
+            }
+        })
+    }
+
+    function confirmDelVideo(cpId, Video_email) {
+        $("#cp_ID").val(cpId);
+        openNotification("Bạn có chắc chắn xóa " + Video_email + " ?", "deleteVideo");
+    }
+
+    function deleteVideo() {
+        $.ajax({
+            url: url_deleteVideo, type: 'post',
+            data: { cpId: $("#cp_ID").val() },
+            success: function (rs) {
+                if (rs == '') {
+                    location.reload();
+                } else {
+                    alert(rs);
+                }
+            }
+        });
+    }
+    
+</script>
+<script src="~/Scripts/toastr.min.js"></script>

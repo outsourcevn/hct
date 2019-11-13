@@ -333,13 +333,77 @@ namespace HocCatToc.Controllers
             {
                 var p = db.groups.OrderBy(o => o.group_name).ToList();
                 field.Add("list", JsonConvert.SerializeObject(p));
-                return ApiArray("success", field, "Danh sách các group");
+                return ApiArray("success", field, "Danh sách các gói học");
             }
             catch (Exception ex)
             {
                 field.Add("list", "[]");
                 return Api("error", field, "Lỗi sql: " + ex.ToString());
             }
+        }
+        public string getlistvideoofgroup(int id)
+        {
+            Dictionary<string, string> field = new Dictionary<string, string>();
+            try
+            {
+                var p = db.videos.Where(o => o.group_id_list.Contains(","+id+",")).OrderByDescending(o => o.id).ToList();
+                field.Add("list", JsonConvert.SerializeObject(p));
+                return ApiArray("success", field, "Danh sách các video thuộc nhóm id=" + id);
+            }
+            catch (Exception ex)
+            {
+                field.Add("list", "[]");
+                return Api("error", field, "Lỗi sql: " + ex.ToString());
+            }
+        }
+        public string getlistvideofree()
+        {
+            Dictionary<string, string> field = new Dictionary<string, string>();
+            try
+            {
+                var p = db.videos.Where(o=>o.is_free==1).OrderByDescending(o => o.id).ToList();
+                field.Add("list", JsonConvert.SerializeObject(p));
+                return ApiArray("success", field, "Danh sách các video học miễn phí");
+            }
+            catch (Exception ex)
+            {
+                field.Add("list", "[]");
+                return Api("error", field, "Lỗi sql: " + ex.ToString());
+            }
+        }
+        public string getlistvideopackage()
+        {
+            Dictionary<string, string> field = new Dictionary<string, string>();
+            try
+            {
+                var p = db.videos.Where(o => o.is_free == 0).OrderByDescending(o => o.id).ToList();
+                field.Add("list", JsonConvert.SerializeObject(p));
+                return ApiArray("success", field, "Danh sách các video học miễn phí");
+            }
+            catch (Exception ex)
+            {
+                field.Add("list", "[]");
+                return Api("error", field, "Lỗi sql: " + ex.ToString());
+            }
+        }
+        public string getlistlink()
+        {
+            Dictionary<string, string> field = new Dictionary<string, string>();
+            try
+            {
+                var p = db.links.Take(1).OrderByDescending(o => o.id).ToList();
+                field.Add("list", JsonConvert.SerializeObject(p));
+                return ApiArray("success", field, "Danh sách các link mạng xã hội");
+            }
+            catch (Exception ex)
+            {
+                field.Add("list", "[]");
+                return Api("error", field, "Lỗi sql: " + ex.ToString());
+            }
+        }
+        public string getdesvideo(long id)
+        {
+            return db.videos.Find(id).des;
         }
         //Kiểm tra video_id này của khách hàng có id là user_id có mã code là code có hợp lệ không
         //Trả về trường true=1 nếu hợp lệ, true=0 nếu không hợp lệ, rỗng nếu api có lỗi
@@ -349,7 +413,7 @@ namespace HocCatToc.Controllers
             try
             {
 
-                if (db.customer_code.Where(o => o.customer_id == user_id).FirstOrDefault().code!=null && code == user_id * 100 + video_id)//o.video_id == video_id && o.code == code && 
+                if (db.customer_code.Where(o => o.customer_id == user_id && o.video_id == video_id).FirstOrDefault().code != null && code == user_id * 100 + video_id)//o.video_id == video_id && o.code == code && 
                 {
                     
                     field.Add("true", "1");
@@ -358,7 +422,7 @@ namespace HocCatToc.Controllers
                 else
                 {
                     field.Add("true", "0");
-                    return Api("failed", field, "Mã code này không thuộc về khách hàng này học video này! Xin bạn hỏi quản trị website");
+                    return Api("failed", field, "Mã code này không thuộc về khách hàng này học gói Video này! Xin bạn hỏi quản trị website");
                 }
             }
             catch (Exception ex)

@@ -2,7 +2,7 @@
 @using PagedList;
 @using HocCatToc.Models;
 @{
-    ViewBag.Title = "Quản Lý Nhóm";
+    ViewBag.Title = "Quản Lý Gói Học";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 <script>
@@ -34,7 +34,7 @@
     </div>
 </div>
 <table class="table marginBottom0">
-    <tr><th>Tên Học Viện</th><th>Email</th><th>Số điện thoại</th><th>Địa chỉ</th></tr>
+    <tr><th>Tên Gói/Học Viện</th><th>Email</th><th>Số điện thoại</th><th>Giá gói học</th></tr>
     @foreach (var item in (PagedList<group>)ViewBag.OnePage)
     {
 
@@ -44,9 +44,9 @@
             </td>
             <td>@item.email</td>
             <td>@item.phone</td>
-            <td>@item.address</td>
-            <td><a href="#" onclick="openGroup(@item.id, '@item.group_name', '@item.email','@item.phone','@item.address')">Sửa</a></td>
-            <td>@*<a href="#" onclick="confirmDelGroup(@item.id,'@item.email');">Xóa</a>*@</td>            
+            <td>@string.Format("{0:n0}", item.price)</td>
+            <td><a href="#" onclick="openGroup(@item.id, '@item.group_name', '@item.email','@item.phone','@item.address','@item.price')">Sửa</a></td>
+            <td><a href="#" onclick="confirmDelGroup(@item.id,'@item.email');">Xóa</a></td>            
         </tr>
     }
 </table>
@@ -56,14 +56,16 @@
     <div class="dTitle">Thêm/Sửa</div>
     <div class="dDialogContent">
         <input type="hidden" id="cp_ID" />
-        <p>Tên Học Viện</p>
+        <p>Tên Gói Học (Học viện)</p>
         <input id="cp_group_name" type="text" class="form-control" placeholder="Tên học viện">
+        <p>Giá</p>
+        <input id="cp_price" type="text" class="form-control" placeholder="Nhập giá gói học">
         <p>Email</p>
         <input id="cp_email" type="text" class="form-control" placeholder="Nhập email">
         <p>Phone</p>
         <input id="cp_phone" type="text" class="form-control" placeholder="Nhập phone">
         <p>Địa chỉ</p>
-        <input id="cp_address" type="text" class="form-control" placeholder="Nhập địa chỉ">
+        <input id="cp_address" type="text" class="form-control" placeholder="Nhập địa chỉ">        
         <div class="divBtn">
             <button type="button" class="btn btn-primary" onclick="saveGroup()">Đồng Ý</button>
             <button type="button" class="btn btn-primary" onclick="closeDDialog('#GroupDialog')">Hủy</button>

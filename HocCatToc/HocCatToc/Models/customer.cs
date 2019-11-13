@@ -27,5 +27,7 @@ namespace HocCatToc.Models
         public Nullable<int> is_paid { get; set; }
         public Nullable<int> group_id { get; set; }
         public string group_name { get; set; }
+        public string group_id_list { get; set; }
+        public string token { get; set; }
     }
 }

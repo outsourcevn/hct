@@ -25,11 +25,14 @@ namespace HocCatToc.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<customer_code> customer_code { get; set; }
         public virtual DbSet<cat> cats { get; set; }
-        public virtual DbSet<free> frees { get; set; }
+        public virtual DbSet<customer_code> customer_code { get; set; }
         public virtual DbSet<customer> customers { get; set; }
-        public virtual DbSet<video> videos { get; set; }
+        public virtual DbSet<free> frees { get; set; }
         public virtual DbSet<group> groups { get; set; }
+        public virtual DbSet<video> videos { get; set; }
+        public virtual DbSet<link> links { get; set; }
+        public virtual DbSet<customer_group> customer_group { get; set; }
+        public virtual DbSet<video_group> video_group { get; set; }
     }
 }

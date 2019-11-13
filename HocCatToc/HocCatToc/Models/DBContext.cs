@@ -59,6 +59,53 @@ namespace HocCatToc.Models
                 return "Thất bại: " + ex.Message;
             }
         }
+        public static string addUpdateLink(link cp)
+        {
+            try
+            {
+                using (var db = new hoccattocEntities())
+                {
+                    if (cp.id == 0)
+                    {
+                        db.links.Add(cp);
+                    }
+                    else
+                    {
+                        db.Entry(cp).State = EntityState.Modified;
+                    }
+                    db.SaveChanges();
+                    
+                }
+                return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                return "Thất bại: " + ex.Message;
+            }
+        }
+        public static string addUpdateVideo(video cp)
+        {
+            try
+            {
+                using (var db = new hoccattocEntities())
+                {
+                    if (cp.id == 0)
+                    {
+                        db.videos.Add(cp);
+                    }
+                    else
+                    {
+                        db.Entry(cp).State = EntityState.Modified;
+                    }
+                    db.SaveChanges();
+                }
+                return cp.id.ToString();
+            }
+            catch (Exception ex)
+            {
+                return "0";
+            }
+        }
         public static string deletecustomer(int cpId)
         {
             try
