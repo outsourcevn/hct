@@ -1,10 +1,11 @@
-﻿function openGroup(id, name, email, phone,address) {
+﻿function openGroup(id, name, email, phone,address,price) {
 
     $("#cp_ID").val(id);
     $("#cp_group_name").val(name);
     $("#cp_email").val(email);
     $("#cp_phone").val(phone);
     $("#cp_address").val(address);
+    $("#cp_price").val(price);
     $("#GroupDialog").show();
 }
 
@@ -31,8 +32,8 @@ function saveGroup() {
         url: url_addUpdateGroup, type: 'post',
         contentType: 'application/json',
         data: JSON.stringify({
-            ID: $("#cp_ID").val(), group_name: $("#cp_group_name").val(), email: $("#cp_email").val(), phone: $("#cp_phone").val(), pass: $("#cp_address").val()
-            , address: $("#cp_address").val()
+            ID: $("#cp_ID").val(), group_name: $("#cp_group_name").val(), email: $("#cp_email").val(), phone: $("#cp_phone").val(), address: $("#cp_address").val()
+            , price: $("#cp_price").val()
         }),
         success: function (rs) {
             if (rs == '') {
