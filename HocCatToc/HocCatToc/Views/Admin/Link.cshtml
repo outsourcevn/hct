@@ -7,24 +7,32 @@
 }
 
 <h2>@ViewBag.Title</h2>
-<button type="button" class="btn btn-primary" onclick="openVideo(0)">Thêm Mới</button><br /><br />
+@*<button type="button" class="btn btn-primary" onclick="openVideo(0)">Thêm Mới</button><br /><br />*@
 
 <table class="table marginBottom0">
-    <tr><th>YouTube</th><th>Zalo</th><th>Fanpage</th><th>Facebook</th><th></th></tr>
+    <tr><th>Link Mạng Xã Hội</th></tr>
     @foreach (var item in (PagedList<link>)ViewBag.OnePage)
     {
 
         <tr>
             <td>
-                @item.youtube
+                1.YouTube: @item.youtube
                
             </td>
-            <td>@item.zalo</td>
-            <td>@item.fanpage</td>
-            <td>@item.facebook
-            <td><a href="#" onclick="openVideo(@item.id,'@item.youtube','@item.zalo','@item.fanpage','@item.facebook')">Sửa</a></td>
-           
-        </tr>
+            </tr>
+    <tr>
+        <td>2.Zalo: @item.zalo</td>
+    </tr>
+    <tr>
+        <td>3.Fanpage: @item.fanpage</td>
+    </tr>
+    <tr>
+        <td>4.Facebook Group: @item.facebook</td>
+    </tr>
+    <tr>
+        <td><a href="#" onclick="openVideo(@item.id,'@item.youtube','@item.zalo','@item.fanpage','@item.facebook')">Sửa</a></td>
+
+    </tr>
     }
 </table>
 @Html.PagedListPager((IPagedList)ViewBag.OnePage, page => Url.Action("Link", new { page }))

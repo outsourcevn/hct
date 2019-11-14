@@ -285,7 +285,7 @@ namespace HocCatToc.Controllers
             {
                 if (keyword == null) keyword = "";
                 DateTime dtn = DateTime.Now;
-                int? grid = db.customers.Find(user_id).group_id;
+                string group_id_list = db.customers.Find(user_id).group_id_list;
                 //var p = (from q in db.videos where q.name.Contains(keyword) select q).OrderBy(o => o.id).ToList();
                 //var p = (from q in db.customers
                 //         where q.id==user_id
@@ -305,7 +305,7 @@ namespace HocCatToc.Controllers
                 //from q in db.customers
                 //where q.id == user_id
                 //         from q2 in db.customer_code.Where(o => o.customer_id == q.id).DefaultIfEmpty()
-                var p = (from q3 in db.videos where q3.group_id== grid
+                var p = (from q3 in db.videos where (q3.group_id_list.Contains(group_id_list) || group_id_list.Contains(q3.group_id_list))
                          select new
                          {
                              id = q3.id,
