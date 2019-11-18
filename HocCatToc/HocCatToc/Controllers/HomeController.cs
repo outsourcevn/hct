@@ -346,7 +346,7 @@ namespace HocCatToc.Controllers
             Dictionary<string, string> field = new Dictionary<string, string>();
             try
             {
-                var p = db.videos.Where(o => o.group_id_list.Contains(","+id+",")).OrderByDescending(o => o.id).ToList();
+                var p = (from q in db.videos select new { create_date = q.create_date, customer_id = q.customer_id, des = q.des, group_id = q.group_id, group_id_list = q.group_id_list, group_name = q.group_name, id = q.id, img = q.img, is_free = q.is_free, link = q.link, name = q.name }).Where(o => o.group_id_list.Contains("," + id + ",")).OrderByDescending(o => o.id).ToList();
                 field.Add("list", JsonConvert.SerializeObject(p));
                 return ApiArray("success", field, "Danh sách các video thuộc nhóm id=" + id);
             }
@@ -361,7 +361,7 @@ namespace HocCatToc.Controllers
             Dictionary<string, string> field = new Dictionary<string, string>();
             try
             {
-                var p = db.videos.Where(o=>o.is_free==1).OrderByDescending(o => o.id).ToList();
+                var p = (from q in db.videos select new { create_date = q.create_date, customer_id = q.customer_id, des = q.des, group_id = q.group_id, group_id_list = q.group_id_list, group_name = q.group_name, id = q.id, img = q.img, is_free = q.is_free, link = q.link, name=q.name}).Where(o => o.is_free == 1).OrderByDescending(o => o.id).ToList();
                 field.Add("list", JsonConvert.SerializeObject(p));
                 return ApiArray("success", field, "Danh sách các video học miễn phí");
             }
@@ -376,9 +376,9 @@ namespace HocCatToc.Controllers
             Dictionary<string, string> field = new Dictionary<string, string>();
             try
             {
-                var p = db.videos.Where(o => o.is_free == 0).OrderByDescending(o => o.id).ToList();
+                var p = (from q in db.videos select new { create_date = q.create_date, customer_id = q.customer_id, des = q.des, group_id = q.group_id, group_id_list = q.group_id_list, group_name = q.group_name, id = q.id, img = q.img, is_free = q.is_free, link = q.link, name = q.name }).Where(o => o.is_free == 0).OrderByDescending(o => o.id).ToList();
                 field.Add("list", JsonConvert.SerializeObject(p));
-                return ApiArray("success", field, "Danh sách các video học miễn phí");
+                return ApiArray("success", field, "Danh sách các video học thu phí");
             }
             catch (Exception ex)
             {
@@ -407,15 +407,31 @@ namespace HocCatToc.Controllers
         }
         //Kiểm tra video_id này của khách hàng có id là user_id có mã code là code có hợp lệ không
         //Trả về trường true=1 nếu hợp lệ, true=0 nếu không hợp lệ, rỗng nếu api có lỗi
-        public string isTrueCode(int video_id,int code,long user_id)
+        public string isTrueCode(long video_id,int code,long user_id)
         {
             Dictionary<string, string> field = new Dictionary<string, string>();
             try
             {
-
-                if (db.customer_code.Where(o => o.customer_id == user_id && o.video_id == video_id).FirstOrDefault().code != null && code == user_id * 100 + video_id)//o.video_id == video_id && o.code == code && 
+                //Lấy ra video này thuộc nhóm nào?
+                string[] group_list_id_video = db.videos.Find(video_id).group_id_list.Split(',');
+                //Lấy ra user này thuộc nhóm nào?
+                string[] group_list_id_user = db.customers.Find(user_id).group_id_list.Split(',');
+                //Tìm xem có nhóm nào chung?
+                bool is_found = false;
+                for (int i = 0; i < group_list_id_user.Length; i++)
                 {
-                    
+                    for (int j = 0; j < group_list_id_video.Length; j++)
+                    if (group_list_id_user[i] == group_list_id_video[j])
+                    {
+                        is_found = true;
+                        break;
+                    }
+                    if (is_found) break;
+                }
+
+                if (is_found && db.customer_code.Where(o => o.customer_id == user_id).FirstOrDefault().code != null && code == user_id * 100 + video_id)//o.video_id == video_id && o.code == code && 
+                {
+
                     field.Add("true", "1");
                     return Api("success", field, "Mã code này đúng là của khách hàng này học video này!");
                 }
