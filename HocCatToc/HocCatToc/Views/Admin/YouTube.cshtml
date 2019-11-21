@@ -36,7 +36,7 @@
     </div>
 </div>
 <table class="table marginBottom0">
-    <tr><th>Tên video</th><th>Link</th><th>Ảnh</th><th>Gói học(Học Viện)</th><th>Ngày Đăng</th></tr>
+    <tr><th>Tên video</th><th>Link</th><th>Ảnh</th><th>Gói học(Học Viện)</th><th>Ngày Đăng</th><th></th><th></th><th></th></tr>
     @foreach (var item in (PagedList<video>)ViewBag.OnePage)
     {
 
@@ -53,11 +53,13 @@
                     }*@
             </td>
             <td>@item.link</td>
-            <td><img src="@item.img" style="width:320px;height:180px;"></td>
+            <td><img src="@item.img" style="width:220px;height:180px;"></td>
             <td>@item.group_name
             <td>@item.date</td>
             <td><a href="#" onclick="openVideo(@item.id,'@item.name','@item.link','@item.img','@item.group_id_list',@item.is_free)">Sửa</a></td>
-            <td><a href="#" onclick="confirmDelVideo(@item.id,'@item.name');">Xóa</a></td>          
+            <td><a  style="cursor:pointer;" onclick="confirmDelVideo(@item.id,'@item.name');">Xóa</a></td>    
+            <td><a  onclick="notifi(@item.id,'@item.link');" style="cursor:pointer;">Gửi thông báo đến các máy</a></td> 
+                  
         </tr>
     }
 </table>
@@ -175,6 +177,23 @@
         });
     }
     autofillgroup(1);
+    function notifi(id,link) {
+        $.ajax({
+            url: "/Admin/sendNoti", type: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                id: id, link: link
+            }),
+            success: function (rs) {
+                //alert(rs);
+                if (rs != "0") {
+                    alert("Đã gửi thông báo thành công đến các máy!");
+                } else {
+                    alert("Có lỗi khi gửi thông báo video đến các máy điện thoại");
+                }
+            }
+        });
+    }
     Dropzone.autoDiscover = false;
     var upanhbaiviet = new Dropzone("div#hinhanh_image", {
         url: "/admin/uploadimgproduct",
