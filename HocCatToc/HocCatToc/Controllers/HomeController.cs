@@ -341,12 +341,12 @@ namespace HocCatToc.Controllers
                 return Api("error", field, "Lỗi sql: " + ex.ToString());
             }
         }
-        public string getlistvideoofgroup(int id)
+        public string getlistvideoofgroup(int id, long? user_id)
         {
             Dictionary<string, string> field = new Dictionary<string, string>();
             try
             {
-                var p = (from q in db.videos select new { create_date = q.create_date, customer_id = q.customer_id, des = q.des, group_id = q.group_id, group_id_list = q.group_id_list, group_name = q.group_name, id = q.id, img = q.img, is_free = q.is_free, link = q.link, name = q.name }).Where(o => o.group_id_list.Contains("," + id + ",")).OrderByDescending(o => o.id).ToList();
+                var p = (from q in db.videos select new { create_date = q.create_date, customer_id = q.customer_id, des = q.des, group_id = q.group_id, group_id_list = q.group_id_list, group_name = q.group_name, id = q.id, img = q.img, is_free = q.is_free, link = q.link, name = q.name, code = user_id * 100 + q.id}).Where(o => o.group_id_list.Contains("," + id + ",")).OrderByDescending(o => o.id).ToList();
                 field.Add("list", JsonConvert.SerializeObject(p));
                 return ApiArray("success", field, "Danh sách các video thuộc nhóm id=" + id);
             }
